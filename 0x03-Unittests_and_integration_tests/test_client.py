@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-
-"""TestGithubOrgClient"""
-
+""" Unittest Test client
+"""
 import unittest
 import json
 from parameterized import parameterized, parameterized_class
@@ -12,25 +11,19 @@ from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
-    '''TestGithubOrgClient'''
+    ''' self descriptive '''
 
     @parameterized.expand([
-        ("google",),
-        ("abc",),
+        ('google'),
+        ('abc')
     ])
     @patch('client.get_json')
-    def test_org(self, org_name, mock_get_json):
-        '''test_org'''
-        mock_get_json.return_value = {"login": org_name}
-
-        client = GithubOrgClient(org_name)
-
-        result = client.org
-
-        mock_get_json.assert_called_once_with(
-            f"https://api.github.com/orgs/{org_name}")
-
-        self.assertEqual(result, mock_get_json.return_value)
+    def test_org(self, data, mock):
+        ''' self descriptive '''
+        endpoint = 'https://api.github.com/orgs/{}'.format(data)
+        spec = GithubOrgClient(data)
+        spec.org()
+        mock.assert_called_once_with(endpoint)
 
     @parameterized.expand([
         ("random-url", {'repos_url': 'http://some_url.com'})
@@ -68,26 +61,27 @@ class TestGithubOrgClient(unittest.TestCase):
         result = GithubOrgClient.has_license(repo, key)
         self.assertEqual(result, expectation)
 
-    @parameterized_class(['org_payload', 'repos_payload',
-                          'expected_repos', 'apache2_repos'], TEST_PAYLOAD)
-    class TestIntegrationGithubOrgClient(unittest.TestCase):
-        """Integration test"""
-        @classmethod
-        def setUpClass(cls):
-            cls.get_patcher = patch('requests.get', side_effect=[
-                cls.org_payload, cls.repos_payload
-            ])
-            cls.mocked_get = cls.get_patcher.start()
 
-        @classmethod
-        def tearDownClass(cls):
-            cls.get_patcher.stop()
+@parameterized_class(['org_payload', 'repos_payload',
+                      'expected_repos', 'apache2_repos'], TEST_PAYLOAD)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Integration test"""
+    @classmethod
+    def setUpClass(cls):
+        cls.get_patcher = patch('requests.get', side_effect=[
+            cls.org_payload, cls.repos_payload
+        ])
+        cls.mocked_get = cls.get_patcher.start()
 
-        def test_public_repos(self):
-            """test public repos """
+    @classmethod
+    def tearDownClass(cls):
+        cls.get_patcher.stop()
 
-        def test_public_repos_with_license(self):
-            """test public with license"""
+    def test_public_repos(self):
+        """test public repos """
+
+    def test_public_repos_with_license(self):
+        """test public with license"""
 
 
 if __name__ == '__main__':

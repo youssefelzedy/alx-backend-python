@@ -52,12 +52,13 @@ class TestGetJson(unittest.TestCase):
 
 
 class TestMemoize(unittest.TestCase):
-    '''Test memoize function
-    '''
+    '''Test memoize function'''
 
     def test_memoize(self):
-        class TestClass:
+        ''' memoize test '''
 
+        class TestClass:
+            ''' self descriptive'''
             def a_method(self):
                 return 42
 
@@ -73,3 +74,6 @@ class TestMemoize(unittest.TestCase):
             res2 = test_instance.a_property
 
             mock_method.assert_called_once()
+
+            self.assertEqual(res1, 42)
+            self.assertEqual(res2, 42)

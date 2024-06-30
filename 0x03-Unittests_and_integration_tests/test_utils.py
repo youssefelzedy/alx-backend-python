@@ -58,6 +58,7 @@ class TestMemoize(unittest.TestCase):
 
         class TestClass:
             ''' self descriptive'''
+
             def a_method(self):
                 return 42
 
